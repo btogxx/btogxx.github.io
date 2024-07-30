@@ -1,4 +1,14 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
+baseURL = 'https://btogxx.github.io'
+languageCode = 'zh'
+title = '杂记'
 theme = "hyde"
+
+[Menus]
+  main = [
+    {Name = "GitHub", URL = "https://github.com/btogxx"},
+    {Name = "E-Mail", URL = "mailto:btogxx@gmail.com"}
+  ]
+ 
+[params]
+  description = "一个MTF程序媛，随便记录点东西！"
+
