@@ -1,0 +1,37 @@
+#! /bin/sh
+
+which -s hugo >>/dev/null || exit 1
+
+git submodule update --init
+
+commit_id=$(git rev-parse --short HEAD)
+git_c1="$(git config user.name)"
+git_c2="$(git config user.email)"
+git_c3="$(git config core.sshCommand)"
+
+[ -L public -a -d $(realpath public) ] || {
+	[ -L public ] && rm -rf $(realpath public)
+	rm -rf public
+	publish_dir=$(mktemp -d)
+	ln -s $publish_dir public
+}
+
+hugo --minify --gc
+
+cd public
+[ ! -d .git ] && {
+	git init -q
+	[ -n "$git_c1" ] && git config user.name  "$git_c1"
+	[ -n "$git_c2" ] && git config user.email "$git_c2"
+	[ -n "$git_c3" ] && git config core.sshCommand "$git_c3"
+}
+[ -z "$(git remote)" ] && {
+	git remote add origin git@github.com:btogxx/btogxx.github.io.git
+	git branch -m publish
+}
+[ -n "$(git status -s)" ] && {
+	git add .
+	git commit -m "generate from $commit_id"
+	git push -f origin publish
+}
+cd -
